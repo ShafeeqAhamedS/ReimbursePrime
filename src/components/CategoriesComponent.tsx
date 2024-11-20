@@ -6,20 +6,20 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 // Mock data for categories
 const initialCategories = [
-  { id: 1, name: 'Health', approvals: 2, cfoApproval: true, preRequestNeeded: false, approvalType: 'forced', approvalGroup: 'medical' },
-  { id: 2, name: 'Auto', approvals: 1, cfoApproval: false, preRequestNeeded: true, approvalType: 'user', approvalGroup: null },
-  { id: 3, name: 'Travel', approvals: 1, cfoApproval: false, preRequestNeeded: false, approvalType: 'user', approvalGroup: null },
-  { id: 4, name: 'Property', approvals: 3, cfoApproval: true, preRequestNeeded: true, approvalType: 'forced', approvalGroup: 'realestate' },
+  { id: 1, name: 'Business Travel', approvals: 2, cfoApproval: true, preRequestNeeded: false, approvalType: 'forced', approvalGroup: 'medical' },
+  { id: 2, name: 'Team Outing', approvals: 1, cfoApproval: false, preRequestNeeded: true, approvalType: 'user', approvalGroup: null },
+  { id: 3, name: 'Parking', approvals: 1, cfoApproval: false, preRequestNeeded: false, approvalType: 'user', approvalGroup: null },
+  { id: 4, name: 'Certification', approvals: 3, cfoApproval: true, preRequestNeeded: true, approvalType: 'forced', approvalGroup: 'realestate' },
 ]
 
 // Mock data for approval groups
-const approvalGroups = ['general', 'medical', 'realestate', 'it', 'hr']
+const approvalGroups = ['general', 'tech', 'finance', 'ETFM', 'WFM']
 
 type Category = {
   id: number;
@@ -79,100 +79,132 @@ export default function EnhancedCategoriesPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Claim Categories</h1>
-      
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Add New Category</CardTitle>
-          <CardDescription>Create a new claim category with custom approval settings</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex-1">
-              <Label htmlFor="new-category-name">Category Name</Label>
-              <Input
-                id="new-category-name"
-                value={newCategory.name}
-                onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                placeholder="Enter category name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="new-category-approvals">Number of Approvals</Label>
-              <Select
-                value={newCategory.approvals.toString()}
-                onValueChange={(value) => setNewCategory({ ...newCategory, approvals: parseInt(value) })}
-              >
-                <SelectTrigger id="new-category-approvals" className="w-[180px]">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[1, 2, 3, 4, 5].map((num) => (
-                    <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="new-category-cfo"
-                checked={newCategory.cfoApproval}
-                onCheckedChange={(checked) => setNewCategory({ ...newCategory, cfoApproval: checked })}
-              />
-              <Label htmlFor="new-category-cfo">CFO Approval Needed</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="new-category-prerequest"
-                checked={newCategory.preRequestNeeded}
-                onCheckedChange={(checked) => setNewCategory({ ...newCategory, preRequestNeeded: checked })}
-              />
-              <Label htmlFor="new-category-prerequest">Pre-Request Needed</Label>
-            </div>
-            <div className="flex-1 w-full">
-              <Label className="mb-2 block">Approval Type</Label>
-              <RadioGroup
-                value={newCategory.approvalType}
-                onValueChange={(value) => setNewCategory({ ...newCategory, approvalType: value, approvalGroup: value === 'user' ? null : newCategory.approvalGroup })}
-                className="flex space-x-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="user" id="new-approval-user" />
-                  <Label htmlFor="new-approval-user">User Choice</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="forced" id="new-approval-forced" />
-                  <Label htmlFor="new-approval-forced">Forced by System</Label>
-                </div>
-              </RadioGroup>
-            </div>
-            {newCategory.approvalType === 'forced' && (
-              <div className="flex-1">
-                <Label htmlFor="new-category-group">Approval Group</Label>
-                <Select
-                  value={newCategory.approvalGroup || ''}
-                  onValueChange={(value) => setNewCategory({ ...newCategory, approvalGroup: value })}
-                >
-                  <SelectTrigger id="new-category-group">
-                    <SelectValue placeholder="Select approval group" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {approvalGroups.map((group) => (
-                      <SelectItem key={group} value={group}>{group}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <Button onClick={handleAddCategory} disabled={!newCategory.name || (newCategory.approvalType === 'forced' && !newCategory.approvalGroup)}>Add Category</Button>
+      <h1 className="text-3xl font-bold mb-6">Reimbursement Categories</h1>
+      <div className="mt-4 flex justify-start py-3">
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>Add New Category</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Category</DialogTitle>
+            <DialogDescription>Create a new reimbursement category with custom approval settings</DialogDescription>
+          </DialogHeader>
+          <CardContent>
+            {/* Form here */}
+            <div className="p-6 bg-white rounded-md shadow-md max-w-2xl mx-auto">
+      <h1 className="text-xl font-semibold mb-4">Create New Category</h1>
+      <div className="flex flex-col space-y-4">
+        <div className="flex flex-col md:flex-row md:space-x-4">
+          <div className="flex-1">
+            <Label htmlFor="category-name">Category Name</Label>
+            <Input
+              id="category-name"
+              value={newCategory.name}
+              onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+              placeholder="Enter category name"
+              required
+            />
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex-1">
+            <Label htmlFor="category-approvals">Number of Approvals</Label>
+            <Select
+              value={newCategory.approvals.toString()}
+              onValueChange={(value) => setNewCategory({ ...newCategory, approvals: parseInt(value) })}
+            >
+              <SelectTrigger id="category-approvals" className="w-full">
+                <SelectValue placeholder="Select approvals" />
+              </SelectTrigger>
+              <SelectContent>
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <SelectItem key={num} value={num.toString()}>
+                    {num}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="cfo-approval"
+              checked={newCategory.cfoApproval}
+              onCheckedChange={(checked) => setNewCategory({ ...newCategory, cfoApproval: checked })}
+            />
+            <Label htmlFor="cfo-approval">CFO Approval Needed</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="pre-request"
+              checked={newCategory.preRequestNeeded}
+              onCheckedChange={(checked) => setNewCategory({ ...newCategory, preRequestNeeded: checked })}
+            />
+            <Label htmlFor="pre-request">Pre-Request Needed</Label>
+          </div>
+        </div>
+
+        <div>
+          <Label>Approval Type</Label>
+          <RadioGroup
+            value={newCategory.approvalType}
+            onValueChange={(value) => setNewCategory({ ...newCategory, approvalType: value, approvalGroup: value === 'user' ? null : newCategory.approvalGroup })}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="user" id="approval-user" />
+              <Label htmlFor="approval-user">User Choice</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="forced" id="approval-forced" />
+              <Label htmlFor="approval-forced">Forced by System</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {newCategory.approvalType === 'forced' && (
+          <div>
+            <Label htmlFor="approval-group">Approval Group</Label>
+            <Select
+              value={newCategory.approvalGroup || ''}
+              onValueChange={(value) => setNewCategory({ ...newCategory, approvalGroup: value })}
+            >
+              <SelectTrigger id="approval-group" className="w-full">
+                <SelectValue placeholder="Select approval group" />
+              </SelectTrigger>
+              <SelectContent>
+                {approvalGroups.map((group) => (
+                  <SelectItem key={group} value={group}>
+                    {group}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+      </div>
+    </div>
+          </CardContent>
+          <DialogFooter>
+          <DialogClose asChild>
+          <Button
+          onClick={handleAddCategory}
+          disabled={!newCategory.name || (newCategory.approvalType === 'forced' && !newCategory.approvalGroup)}
+          className="w-full mt-4"
+          type="submit"
+        >
+          Add Category
+        </Button>       
+        </DialogClose>
+        </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      </div>
       <Card>
         <CardHeader>
-          <CardTitle>Existing Categories</CardTitle>
-          <CardDescription>Manage and edit existing claim categories</CardDescription>
+          <CardTitle>Categories</CardTitle>
+          <CardDescription>Manage and edit existing reimbursement categories</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>

@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Plus, Eye, Download, Search } from 'lucide-react'
+import { Eye, Download, Search } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Checkbox } from "@/components/ui/checkbox"
 
 // Mock data for payment vouchers
 const initialVouchers = [
@@ -24,21 +24,39 @@ type Voucher = {
 };
 
 export default function PaymentVouchersPage() {
-  const [vouchers, setVouchers] = useState<Voucher[]>(initialVouchers)
+  const vouchers = initialVouchers
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null)
+  const [selectedVouchers, setSelectedVouchers] = useState<string[]>([])
 
   const filteredVouchers = vouchers.filter(voucher => 
     voucher.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
     voucher.claimId.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleCreateVoucher = (newVoucher: Omit<Voucher, 'id'>) => {
-    setVouchers([...vouchers, { ...newVoucher, id: `PV${vouchers.length + 1}`.padStart(5, '0') }])
-  }
-
   const handleViewVoucher = (voucher: Voucher) => {
     setSelectedVoucher(voucher)
+  }
+
+  const handleSelectAllVouchers = () => {
+    if (selectedVouchers.length === filteredVouchers.length) {
+      setSelectedVouchers([])
+    } else {
+      setSelectedVouchers(filteredVouchers.map(voucher => voucher.id))
+    }
+  }
+
+  const handleSelectVoucher = (voucherId: string) => {
+    if (selectedVouchers.includes(voucherId)) {
+      setSelectedVouchers(selectedVouchers.filter(id => id !== voucherId))
+    } else {
+      setSelectedVouchers([...selectedVouchers, voucherId])
+    }
+  }
+
+  const handleBulkDownload = () => {
+    // Implement bulk download logic here
+    console.log('Downloading selected vouchers:', selectedVouchers)
   }
 
   return (
@@ -57,50 +75,6 @@ export default function PaymentVouchersPage() {
             <Search className="h-4 w-4" />
           </Button>
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Create Voucher
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Create New Voucher</DialogTitle>
-              <DialogDescription>
-                Enter the details for the new payment voucher.
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={(e) => {
-              e.preventDefault()
-              const formData = new FormData(e.target as HTMLFormElement)
-              handleCreateVoucher({
-                claimId: formData.get('claimId') as string,
-                amount: parseFloat(formData.get('amount') as string),
-                date: new Date().toISOString().split('T')[0],
-                status: 'Pending'
-              })
-            }}>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="claimId" className="text-right">
-                    Claim ID
-                  </Label>
-                  <Input id="claimId" name="claimId" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="amount" className="text-right">
-                    Amount
-                  </Label>
-                  <Input id="amount" name="amount" type="number" className="col-span-3" />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Create Voucher</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
       </div>
 
       <Card>
@@ -112,22 +86,32 @@ export default function PaymentVouchersPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[50px]">
+                  <Checkbox
+                    checked={selectedVouchers.length === filteredVouchers.length}
+                    onCheckedChange={handleSelectAllVouchers}
+                  />
+                </TableHead>
                 <TableHead>Voucher ID</TableHead>
-                <TableHead>Claim ID</TableHead>
+                <TableHead>Reimbursement ID</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredVouchers.map((voucher) => (
                 <TableRow key={voucher.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedVouchers.includes(voucher.id)}
+                      onCheckedChange={() => handleSelectVoucher(voucher.id)}
+                    />
+                  </TableCell>
                   <TableCell>{voucher.id}</TableCell>
                   <TableCell>{voucher.claimId}</TableCell>
                   <TableCell>${voucher.amount.toFixed(2)}</TableCell>
                   <TableCell>{voucher.date}</TableCell>
-                  <TableCell>{voucher.status}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
                       <Button size="sm" variant="outline" onClick={() => handleViewVoucher(voucher)}>
@@ -145,6 +129,12 @@ export default function PaymentVouchersPage() {
         </CardContent>
       </Card>
 
+      <div className="mt-4 flex justify-end">
+        <Button onClick={handleBulkDownload} disabled={selectedVouchers.length === 0}>
+          Download Selected Vouchers ({selectedVouchers.length})
+        </Button>
+      </div>
+
       {selectedVoucher && (
         <Dialog open={!!selectedVoucher} onOpenChange={() => setSelectedVoucher(null)}>
           <DialogContent className="sm:max-w-[600px]">
@@ -158,7 +148,7 @@ export default function PaymentVouchersPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="font-semibold">Claim ID:</p>
+                  <p className="font-semibold">Reimbursement ID:</p>
                   <p>{selectedVoucher.claimId}</p>
                 </div>
                 <div>
@@ -168,10 +158,6 @@ export default function PaymentVouchersPage() {
                 <div>
                   <p className="font-semibold">Date:</p>
                   <p>{selectedVoucher.date}</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Status:</p>
-                  <p>{selectedVoucher.status}</p>
                 </div>
               </div>
               <div className="mt-4">

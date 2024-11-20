@@ -13,8 +13,8 @@ import { toast } from "@/hooks/use-toast"
 // Mock data for policies
 const initialPolicies = [
   { id: 1, name: 'Travel Expense Policy', type: 'pdf', lastUpdated: '2023-06-15' },
-  { id: 2, name: 'Health Insurance Claims', type: 'docx', lastUpdated: '2023-05-20' },
-  { id: 3, name: 'Equipment Damage Policy', type: 'pdf', lastUpdated: '2023-04-10' },
+  { id: 2, name: 'Professional Development Policy', type: 'docx', lastUpdated: '2023-05-20' },
+  { id: 3, name: 'Product Licensing Policy', type: 'pdf', lastUpdated: '2023-04-10' },
 ]
 
 export default function PolicyPage() {
@@ -43,7 +43,7 @@ export default function PolicyPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Company Policies</h1>
+      <h1 className="text-3xl font-bold mb-6">Reimbursement Policies</h1>
       
       <div className="flex justify-between items-center mb-6">
         <Dialog>

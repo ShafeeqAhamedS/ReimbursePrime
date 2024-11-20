@@ -1,40 +1,56 @@
 import { CreditCard, FileText, PieChart, Clock, Bell, Plus } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Bar, BarChart as RechartsBarChart, XAxis, YAxis, ResponsiveContainer, LineChart, Line } from 'recharts'
 
-export default function EnhancedClaimsDashboard() {
+export default function EnhancedReimbursementsDashboard() {
+  const searchTerm =''
+  const filterType = 'all'
 
-  const claimsByCategory = [
-    { name: 'Health', value: 400 },
-    { name: 'Auto', value: 300 },
-    { name: 'Property', value: 200 },
-    { name: 'Travel', value: 100 },
+  const ReimbursementsByCategory = [
+    { name: 'Parking', value: 400 },
+    { name: 'Certification', value: 300 },
+    { name: 'Team Outings', value: 200 },
+    { name: 'Business Travel', value: 100 },
   ]
 
-  const claimsTrend = [
-    { name: 'Jan', claims: 65 },
-    { name: 'Feb', claims: 59 },
-    { name: 'Mar', claims: 80 },
-    { name: 'Apr', claims: 81 },
-    { name: 'May', claims: 56 },
-    { name: 'Jun', claims: 55 },
+  const claimHistory = [
+    { id: 'CL001', employee: 'John Doe', amount: 1200, date: '2023-06-15', status: 'Approved' },
+    { id: 'CL002', employee: 'Jane Smith', amount: 3500, date: '2023-06-14', status: 'Pending' },
+    { id: 'CL003', employee: 'Mike Johnson', amount: 800, date: '2023-06-13', status: 'Rejected' },
+  ]
+
+  const filteredHistory = claimHistory.filter(claim => 
+    (claim.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     claim.employee.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (filterType === 'all' || claim.status.toLowerCase() === filterType)
+  ))
+
+  const ReimbursementsTrend = [
+    { name: 'Jan', Reimbursements: 65 },
+    { name: 'Feb', Reimbursements: 59 },
+    { name: 'Mar', Reimbursements: 80 },
+    { name: 'Apr', Reimbursements: 81 },
+    { name: 'May', Reimbursements: 56 },
+    { name: 'Jun', Reimbursements: 55 },
   ]
 
   return (
       <main className="flex-1 overflow-y-auto">
         <div className="p-8">
           <header className="mb-8 flex justify-between items-center">
-            <h2 className="text-3xl font-bold text-gray-800">Dashboard</h2>
+            <h2 className="text-3xl font-bold text-gray-800">Welcome, Tulasiram Balla !!!</h2>
             <div className="flex items-center space-x-4">
               <Button variant="outline" size="icon">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Button variant="default">
-                <Plus className="mr-2 h-4 w-4" /> New Claim
-              </Button>
+              <a href="https://shafeeqahamed.atlassian.net/servicedesk/customer/portal/1" target="_blank" rel="noreferrer">
+                <Button variant="default">
+                  <Plus className="mr-2 h-4 w-4" /> Employee Portal 
+                </Button>
+              </a>
             </div>
           </header>
           
@@ -42,17 +58,17 @@ export default function EnhancedClaimsDashboard() {
           <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Claims</CardTitle>
+                <CardTitle className="text-sm font-medium">Total Reimbursements</CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-coral">1,234</div>
+                <div className="text-2xl font-bold text-[#E3194B]">1,234</div>
                 <p className="text-xs text-muted-foreground">+20.1% from last month</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Pending Claims</CardTitle>
+                <CardTitle className="text-sm font-medium">Pending Reimbursements</CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -62,7 +78,7 @@ export default function EnhancedClaimsDashboard() {
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Settled Claims</CardTitle>
+                <CardTitle className="text-sm font-medium">Settled Reimbursements</CardTitle>
                 <PieChart className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -86,20 +102,20 @@ export default function EnhancedClaimsDashboard() {
           <div className="grid gap-6 mb-8 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Claims by Category</CardTitle>
+                <CardTitle>Reimbursements by Category</CardTitle>
               </CardHeader>
               <CardContent>
                 <ChartContainer
                   config={{
                     value: {
-                      label: "Claims",
+                      label: "Reimbursements",
                       color: "hsl(var(--chart-1))",
                     },
                   }}
-                  className="h-[300px]"
+                  className="h-[300px] w-[90%]"
                 >
                   <ResponsiveContainer width="100%" height="100%">
-                    <RechartsBarChart data={claimsByCategory}>
+                    <RechartsBarChart data={ReimbursementsByCategory}>
                       <XAxis dataKey="name" />
                       <YAxis />
                       <ChartTooltip content={<ChartTooltipContent />} />
@@ -111,24 +127,24 @@ export default function EnhancedClaimsDashboard() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Claims Trend</CardTitle>
+                <CardTitle>Reimbursements Trend</CardTitle>
               </CardHeader>
               <CardContent>
                 <ChartContainer
                   config={{
-                    claims: {
-                      label: "Claims",
+                    Reimbursements: {
+                      label: "Reimbursements",
                       color: "hsl(var(--chart-2))",
                     },
                   }}
-                  className="h-[300px]"
+                  className="h-[300px] w-[90%]"
                 >
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={claimsTrend}>
+                    <LineChart data={ReimbursementsTrend}>
                       <XAxis dataKey="name" />
                       <YAxis />
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line type="monotone" dataKey="claims" stroke="var(--color-claims)" />
+                      <Line type="monotone" dataKey="Reimbursements" stroke="var(--color-Reimbursements)" />
                     </LineChart>
                   </ResponsiveContainer>
                 </ChartContainer>
@@ -136,47 +152,42 @@ export default function EnhancedClaimsDashboard() {
             </Card>
           </div>
 
-          {/* Recent Claims Table */}
+          {/* Recent Reimbursements Table */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Claims</CardTitle>
-              <CardDescription>A list of recent claims and their current status.</CardDescription>
+              <CardTitle>Recent Reimbursements</CardTitle>
+              <CardDescription>A list of recent Reimbursements and their current status.</CardDescription>
             </CardHeader>
             <CardContent>
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b">
-                    <th className="pb-2">Claim ID</th>
-                    <th className="pb-2">Category</th>
-                    <th className="pb-2">Amount</th>
-                    <th className="pb-2">Status</th>
-                    <th className="pb-2">Progress</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b">
-                    <td className="py-2">CL-001</td>
-                    <td className="py-2">Health</td>
-                    <td className="py-2">$1,200</td>
-                    <td className="py-2 text-yellow-500">Pending</td>
-                    <td className="py-2 w-[100px]"><Progress value={33} /></td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="py-2">CL-002</td>
-                    <td className="py-2">Auto</td>
-                    <td className="py-2">$3,500</td>
-                    <td className="py-2 text-green-500">Approved</td>
-                    <td className="py-2 w-[100px]"><Progress value={100} /></td>
-                  </tr>
-                  <tr>
-                    <td className="py-2">CL-003</td>
-                    <td className="py-2">Travel</td>
-                    <td className="py-2">$800</td>
-                    <td className="py-2 text-blue-500">Under Review</td>
-                    <td className="py-2 w-[100px]"><Progress value={66} /></td>
-                  </tr>
-                </tbody>
-              </table>
+            <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Claim ID</TableHead>
+                    <TableHead>Applier</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredHistory.map((claim) => (
+                    <TableRow key={claim.id}>
+                      <TableCell>{claim.id}</TableCell>
+                      <TableCell>{claim.employee}</TableCell>
+                      <TableCell>₹{claim.amount.toFixed(2)}</TableCell>
+                      <TableCell>{claim.date}</TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold
+                          ${claim.status === 'Approved' ? 'bg-green-100 text-green-800' : 
+                            claim.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
+                            'bg-red-100 text-red-800'}`}>
+                          {claim.status}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </div>
