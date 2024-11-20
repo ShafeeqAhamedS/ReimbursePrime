@@ -51,20 +51,20 @@ function App() {
           </nav>
         </aside>
 
+        
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto">
           <div className="p-8">
             <Routes>
-              <Route path="/" element={<ClaimsDashboard />} />
+              <Route path="/dashboard" element={<ClaimsDashboard />} />
               <Route path="/settle" element={<SettlePage />} />
               <Route path="/categories" element={<EnhancedCategoriesPage />} />
               <Route path="/payment-vouchers" element={<PaymentVouchersPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/policies" element={<PolicyPage />} />
+              <Route path="*" element={<ClaimsDashboard />} />
               {/* Add routes for additional components if needed */}
             </Routes>
           </div>
-        </main>
       </div>
     </Router>
   );
