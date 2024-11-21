@@ -9,7 +9,8 @@ import EnhancedCategoriesPage from "./components/CategoriesComponent";
 import PaymentVouchersPage from "./components/PaymentVoucherComponent";
 import HistoryPage from "./components/historyComponent";
 import PolicyPage from "./components/PolicyComponent";
-import TravelPage from "./components/TravelComponent";
+import TravelPage from "./components/travelComponent";
+
 
 function App() {
   return (
@@ -73,6 +74,8 @@ function AppContent() {
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/policies" element={<PolicyPage />} />
             <Route path="*" element={<ClaimsDashboard />} />
+            <Route path="/travel" element={<TravelPage/>} />
+            
             {/* Add routes for additional components if needed */}
           </Routes>
         </div>
