@@ -97,7 +97,7 @@ export default function HistoryPage() {
                 </TableHeader>
                 <TableBody>
                   {filteredHistory.map((claim) => (
-                    <TableRow key={claim.id}>
+                    <TableRow key={claim.id} className="hover:bg-[#E3194B]/10">
                       <TableCell>{claim.id}</TableCell>
                       <TableCell>{claim.applier}</TableCell>
                       <TableCell>{claim.approver}</TableCell>
