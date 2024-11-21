@@ -11,6 +11,7 @@ import HistoryPage from "./components/historyComponent";
 import PolicyPage from "./components/PolicyComponent";
 import TravelPage from "./components/travelComponent";
 
+
 function App() {
   return (
     <Router>
@@ -74,6 +75,7 @@ function AppContent() {
             <Route path="/policies" element={<PolicyPage />} />
             <Route path="*" element={<ClaimsDashboard />} />
             <Route path="/travel" element={<TravelPage/>} />
+            
             {/* Add routes for additional components if needed */}
           </Routes>
         </div>

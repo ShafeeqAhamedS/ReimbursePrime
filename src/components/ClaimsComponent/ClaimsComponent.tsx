@@ -1,56 +1,73 @@
 import { useState } from 'react'
-import { FileSpreadsheet, Filter, RefreshCcw } from 'lucide-react'
+import { FileSpreadsheet, Calendar, RefreshCcw } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 
-// Mock data for pending claims
-const pendingClaims = [
-  { id: 'CL-001', claimant: 'John Doe', amount: 1200, category: 'Health', date: '2023-06-15' },
-  { id: 'CL-002', claimant: 'Jane Smith', amount: 3500, category: 'Auto', date: '2023-06-14' },
-  { id: 'CL-003', claimant: 'Bob Johnson', amount: 800, category: 'Travel', date: '2023-06-13' },
-  { id: 'CL-004', claimant: 'Alice Brown', amount: 2000, category: 'Property', date: '2023-06-12' },
-  { id: 'CL-005', claimant: 'Charlie Davis', amount: 1500, category: 'Health', date: '2023-06-11' },
+// Mock data for pending Reimbursements
+const pendingReimbursements = [
+  { id: 'CL-001', employee: 'John Doe', amount: 1200, category: 'Business Travel', date: '2023-06-15' },
+  { id: 'CL-002', employee: 'Jane Smith', amount: 3500, category: 'Team Outing', date: '2023-06-14' },
+  { id: 'CL-003', employee: 'Bob Johnson', amount: 800, category: 'Parking', date: '2023-06-13' },
+  { id: 'CL-004', employee: 'Alice Brown', amount: 2000, category: 'Certification', date: '2023-06-12' },
+  { id: 'CL-005', employee: 'Charlie Davis', amount: 1500, category: 'Certification', date: '2023-06-11' },
+]
+
+const pendingconfirmation = [
+  { id: 'CL-001', employee: 'John Doe', amount: 1200, category: 'Business Travel', date: '2023-06-15' },
+  { id: 'CL-005', employee: 'Charlie Davis', amount: 1500, category: 'Certification', date: '2023-06-11' },
 ]
 
 export default function SettlePage() {
-  const [selectedClaims, setSelectedClaims] = useState<string[]>([])
+  const [selectedReimbursements, setSelectedReimbursements] = useState<string[]>([])
+  const [selectedPendingConfirmations, setSelectedPendingConfirmations] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [filterCategory, setFilterCategory] = useState('All')
 
-  const filteredClaims = pendingClaims.filter(claim => 
-    claim.claimant.toLowerCase().includes(searchTerm.toLowerCase()) &&
+  const filteredReimbursements = pendingReimbursements.filter(claim => 
+    claim.employee.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (filterCategory === 'All' || claim.category === filterCategory)
   )
 
-  const handleSelectAll = () => {
-    if (selectedClaims.length === filteredClaims.length) {
-      setSelectedClaims([])
+  const handleSelectAllReimbursements = () => {
+    if (selectedReimbursements.length === filteredReimbursements.length) {
+      setSelectedReimbursements([])
     } else {
-      setSelectedClaims(filteredClaims.map(claim => claim.id))
+      setSelectedReimbursements(filteredReimbursements.map(claim => claim.id))
     }
   }
 
-  const handleSelectClaim = (claimId: string) => {
-    if (selectedClaims.includes(claimId)) {
-      setSelectedClaims(selectedClaims.filter(id => id !== claimId))
+  const handleSelectAllPendingConfirmations = () => {
+    if (selectedPendingConfirmations.length === pendingconfirmation.length) {
+      setSelectedPendingConfirmations([])
     } else {
-      setSelectedClaims([...selectedClaims, claimId])
+      setSelectedPendingConfirmations(pendingconfirmation.map(claim => claim.id))
     }
   }
 
-  const handleBulkSettle = () => {
-    // Implement bulk settlement logic here
-    console.log('Settling claims:', selectedClaims)
+  const handleSelectReimbursement = (claimId: string) => {
+    if (selectedReimbursements.includes(claimId)) {
+      setSelectedReimbursements(selectedReimbursements.filter(id => id !== claimId))
+    } else {
+      setSelectedReimbursements([...selectedReimbursements, claimId])
+    }
+  }
+
+  const handleSelectPendingConfirmation = (claimId: string) => {
+    if (selectedPendingConfirmations.includes(claimId)) {
+      setSelectedPendingConfirmations(selectedPendingConfirmations.filter(id => id !== claimId))
+    } else {
+      setSelectedPendingConfirmations([...selectedPendingConfirmations, claimId])
+    }
   }
 
   const handleDownloadExcel = () => {
     // Implement Excel download logic here
-    console.log('Downloading approved claims as Excel')
+    console.log('Downloading approved Reimbursements as Excel')
   }
 
   const handleHDFCBankAPILink = () => {
@@ -60,12 +77,92 @@ export default function SettlePage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Settle Claims</h1>
-      
-      <div className="flex justify-between items-center mb-6">
+      <h1 className="text-3xl font-bold mb-6">Settle Reimbursements</h1>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Pending Confirmation</CardTitle>
+          <CardDescription>Review and confirm settled Reimbursements</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]">
+                  <Checkbox
+                    checked={selectedPendingConfirmations.length === pendingconfirmation.length}
+                    onCheckedChange={handleSelectAllPendingConfirmations}
+                  />
+                </TableHead>
+                <TableHead>Reimbursement ID</TableHead>
+                <TableHead>Employee</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {pendingconfirmation.map((claim) => (
+                <TableRow key={claim.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedPendingConfirmations.includes(claim.id)}
+                      onCheckedChange={() => handleSelectPendingConfirmation(claim.id)}
+                    />
+                  </TableCell>
+                  <TableCell>{claim.id}</TableCell>
+                  <TableCell>{claim.employee}</TableCell>
+                  <TableCell>₹{claim.amount}</TableCell>
+                  <TableCell>{claim.category}</TableCell>
+                  <TableCell>{claim.date}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <div className="mt-4 flex justify-end">
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className="bg-[#E3194B]" disabled={selectedPendingConfirmations.length === 0}>
+            Confirm Selected Reimbursements ({selectedPendingConfirmations.length})
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Settle Selected Reimbursements</DialogTitle>
+          </DialogHeader>
+          <p>Number of claims to settle: {selectedPendingConfirmations.length}</p>
+            <ol className="mb-4">
+              {selectedPendingConfirmations.map(claimId => {
+                const claim = pendingReimbursements.find(c => c.id === claimId)
+                return (
+                  <li key={claimId}>
+                    {claim?.employee} - ₹{claim?.amount}
+                  </li>
+                )
+              })}
+            </ol>
+            <div className="flex items-center justify-center space-x-2">
+            <DialogClose asChild>
+            <Button onClick={handleHDFCBankAPILink} type="submit">
+                <RefreshCcw className="mr-2 h-4 w-4" />
+                Payment Initiated
+              </Button>
+            </DialogClose>
+            </div>
+          <DialogFooter>
+            
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      </div>
+
+      <div className="flex justify-between items-center my-6">
         <div className="flex items-center space-x-2">
           <Input
-            placeholder="Search claims..."
+            placeholder="Search Reimbursements..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-64"
@@ -76,32 +173,23 @@ export default function SettlePage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All">All Categories</SelectItem>
-              <SelectItem value="Health">Health</SelectItem>
-              <SelectItem value="Auto">Auto</SelectItem>
-              <SelectItem value="Travel">Travel</SelectItem>
-              <SelectItem value="Property">Property</SelectItem>
+              <SelectItem value="Business Travel">Business Travel</SelectItem>
+              <SelectItem value="Team Outing">Team Outing</SelectItem>
+              <SelectItem value="Parking">Parking</SelectItem>
+              <SelectItem value="Certification">Certification</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="icon">
-            <Filter className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button onClick={handleDownloadExcel}>
-            <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Download Approved Claims
-          </Button>
-          <Button onClick={handleHDFCBankAPILink}>
-            <RefreshCcw className="mr-2 h-4 w-4" />
-            HDFC Bank API Link
+          <Button variant="outline">
+            <Calendar className="mr-2 h-4 w-4" />
+            Date Range
           </Button>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Pending Claims</CardTitle>
-          <CardDescription>Review and settle pending claims</CardDescription>
+          <CardTitle>Reimbursements Settlement Queue</CardTitle>
+          <CardDescription>Review and settle pending Reimbursements</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -109,51 +197,31 @@ export default function SettlePage() {
               <TableRow>
                 <TableHead className="w-[50px]">
                   <Checkbox
-                    checked={selectedClaims.length === filteredClaims.length}
-                    onCheckedChange={handleSelectAll}
+                    checked={selectedReimbursements.length === filteredReimbursements.length}
+                    onCheckedChange={handleSelectAllReimbursements}
                   />
                 </TableHead>
-                <TableHead>Claim ID</TableHead>
-                <TableHead>Claimant</TableHead>
+                <TableHead>Reimbursement ID</TableHead>
+                <TableHead>Employee</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredClaims.map((claim) => (
+              {filteredReimbursements.map((claim) => (
                 <TableRow key={claim.id}>
                   <TableCell>
                     <Checkbox
-                      checked={selectedClaims.includes(claim.id)}
-                      onCheckedChange={() => handleSelectClaim(claim.id)}
+                      checked={selectedReimbursements.includes(claim.id)}
+                      onCheckedChange={() => handleSelectReimbursement(claim.id)}
                     />
                   </TableCell>
                   <TableCell>{claim.id}</TableCell>
-                  <TableCell>{claim.claimant}</TableCell>
-                  <TableCell>${claim.amount}</TableCell>
+                  <TableCell>{claim.employee}</TableCell>
+                  <TableCell>₹{claim.amount}</TableCell>
                   <TableCell>{claim.category}</TableCell>
                   <TableCell>{claim.date}</TableCell>
-                  <TableCell>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline">Settle</Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Settle Claim {claim.id}</DialogTitle>
-                          <DialogDescription>
-                            Are you sure you want to settle this claim for ${claim.amount}?
-                          </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
-                          <Button variant="outline">Cancel</Button>
-                          <Button>Confirm Settlement</Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -162,9 +230,46 @@ export default function SettlePage() {
       </Card>
 
       <div className="mt-4 flex justify-end">
-        <Button onClick={handleBulkSettle} disabled={selectedClaims.length === 0}>
-          Settle Selected Claims ({selectedClaims.length})
-        </Button>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button disabled={selectedReimbursements.length === 0}>
+            Settle Selected Reimbursements ({selectedReimbursements.length})
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Settle Selected Reimbursements</DialogTitle>
+          </DialogHeader>
+          <p>Number of claims to settle: {selectedReimbursements.length}</p>
+            <ol className="mb-4">
+              {selectedReimbursements.map(claimId => {
+                const claim = pendingReimbursements.find(c => c.id === claimId)
+                return (
+                  <li key={claimId}>
+                    {claim?.employee} - ₹{claim?.amount}
+                  </li>
+                )
+              })}
+            </ol>
+            <div className="flex items-center justify-center space-x-2">
+            <DialogClose asChild>
+              <Button onClick={handleDownloadExcel} type="submit">
+                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                Download as Excel
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+            <Button onClick={handleHDFCBankAPILink} type="submit">
+                <RefreshCcw className="mr-2 h-4 w-4" />
+                Settle with Bank
+              </Button>
+            </DialogClose>
+            </div>
+          <DialogFooter>
+            
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       </div>
     </div>
   )
