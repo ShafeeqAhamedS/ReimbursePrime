@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart as RechartsBarChart, XAxis, YAxis, ResponsiveContainer, LineChart, Line } from 'recharts'
+import { Bar, BarChart as RechartsBarChart, XAxis, YAxis, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts'
 
 export default function EnhancedReimbursementsDashboard() {
   const searchTerm =''
@@ -140,12 +140,12 @@ export default function EnhancedReimbursementsDashboard() {
                   className="h-[300px] w-[90%]"
                 >
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={ReimbursementsTrend}>
+                    <AreaChart data={ReimbursementsTrend}>
                       <XAxis dataKey="name" />
                       <YAxis />
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line type="monotone" dataKey="Reimbursements" stroke="var(--color-Reimbursements)" />
-                    </LineChart>
+                      <Area type="monotone" dataKey="Reimbursements" stroke="var(--color-Reimbursements)" fill="var(--color-Reimbursements)" />
+                    </AreaChart>
                   </ResponsiveContainer>
                 </ChartContainer>
               </CardContent>
@@ -171,7 +171,7 @@ export default function EnhancedReimbursementsDashboard() {
                 </TableHeader>
                 <TableBody>
                   {filteredHistory.map((claim) => (
-                    <TableRow key={claim.id}>
+                    <TableRow key={claim.id} className="hover:bg-[#E3194B]/10">
                       <TableCell>{claim.id}</TableCell>
                       <TableCell>{claim.employee}</TableCell>
                       <TableCell>₹{claim.amount.toFixed(2)}</TableCell>

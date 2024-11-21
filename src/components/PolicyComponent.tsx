@@ -133,7 +133,7 @@ export default function PolicyPage() {
             </TableHeader>
             <TableBody>
               {policies.map((policy) => (
-                <TableRow key={policy.id}>
+                <TableRow key={policy.id} className="hover:bg-[#E3194B]/10">
                   <TableCell>{policy.name}</TableCell>
                   <TableCell>{policy.type.toUpperCase()}</TableCell>
                   <TableCell>{policy.lastUpdated}</TableCell>

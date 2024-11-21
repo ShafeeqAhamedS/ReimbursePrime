@@ -101,7 +101,7 @@ export default function PaymentVouchersPage() {
             </TableHeader>
             <TableBody>
               {filteredVouchers.map((voucher) => (
-                <TableRow key={voucher.id}>
+                <TableRow key={voucher.id} className="hover:bg-[#E3194B]/10">
                   <TableCell>
                     <Checkbox
                       checked={selectedVouchers.includes(voucher.id)}

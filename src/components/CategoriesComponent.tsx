@@ -221,7 +221,7 @@ export default function EnhancedCategoriesPage() {
             </TableHeader>
             <TableBody>
               {categories.map((category) => (
-                <TableRow key={category.id}>
+                <TableRow key={category.id} className="hover:bg-[#E3194B]/10">
                   <TableCell>
                     {editingCategory && editingCategory.id === category.id ? (
                       <Input

@@ -22,6 +22,10 @@ const pendingconfirmation = [
   { id: 'CL-005', employee: 'Charlie Davis', amount: 1500, category: 'Certification', date: '2023-06-11' },
 ]
 
+const hoverStyle = {
+  backgroundColor: 'rgba(227, 25, 75, 0.1)',
+}
+
 export default function SettlePage() {
   const [selectedReimbursements, setSelectedReimbursements] = useState<string[]>([])
   const [selectedPendingConfirmations, setSelectedPendingConfirmations] = useState<string[]>([])
@@ -103,7 +107,7 @@ export default function SettlePage() {
             </TableHeader>
             <TableBody>
               {pendingconfirmation.map((claim) => (
-                <TableRow key={claim.id}>
+                <TableRow key={claim.id} style={{ cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}>
                   <TableCell>
                     <Checkbox
                       checked={selectedPendingConfirmations.includes(claim.id)}
@@ -168,7 +172,7 @@ export default function SettlePage() {
             className="w-64"
           />
           <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px]" style={{ cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}>
               <SelectValue placeholder="Filter by category" />
             </SelectTrigger>
             <SelectContent>
@@ -210,7 +214,7 @@ export default function SettlePage() {
             </TableHeader>
             <TableBody>
               {filteredReimbursements.map((claim) => (
-                <TableRow key={claim.id}>
+                <TableRow key={claim.id} style={{ cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}>
                   <TableCell>
                     <Checkbox
                       checked={selectedReimbursements.includes(claim.id)}
